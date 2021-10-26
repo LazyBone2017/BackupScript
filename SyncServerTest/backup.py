@@ -1,7 +1,7 @@
 #!/bin/python
 
 import os
-import shutil 
+import shutil
 import sys
 import datetime
 
@@ -14,8 +14,7 @@ def copy(src, dst):
             copy(src_path, dst_path)
         else:
             shutil.copyfile(src_path, dst_path)
-        
-        
+
 def check_versions(backup_dir, max_versions):
     backups = os.listdir(backup_dir)
     if len(backups) >= max_versions: #deletion
@@ -31,7 +30,6 @@ def create_backup(src, dst):
     os.mkdir(dst + "/" + date)
     copy(src, dst + "/" + date)
 
-
 if __name__ == "__main__":
     src = sys.argv[1]
     dst = sys.argv[2]
@@ -43,4 +41,3 @@ if __name__ == "__main__":
 
     check_versions(dst, max_versions)
     create_backup(src, dst)
-    
