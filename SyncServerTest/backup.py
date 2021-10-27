@@ -38,11 +38,24 @@ def check_versions(backup_dir, max_versions):
 
 def create_backup(src, dst, type):
     date = datetime.datetime.now().isoformat()[0:10]
+    backups = os.listdir(dst)
+    filepath = dst + "/" + date
+    today_backups = list(filter(lambda bak: bak.startswith(date), backups))
+    if len(today_backups) > 0:
+        today_backups.sort()
+        latest_backup = today_backups[-1]
+        filenr_string = latest_backup.split('_')[-1]
+        try:
+            filenr = int(filenr_string)
+        except:
+            filenr = 0
+        filepath += '_' + str(filenr + 1)
+
     if type == 'archive':
-        archive(src, dst + "/" + date)
+        archive(src, filepath)
     else:
-        os.mkdir(dst + "/" + date)
-        copy(src, dst + "/" + date)
+        os.mkdir(filepath)
+        copy(src, filepath)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='A simple backup script intended to be called periodically, e.g. using cron')
