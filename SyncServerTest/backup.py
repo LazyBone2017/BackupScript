@@ -28,7 +28,7 @@ def check_versions(backup_dir, max_versions):
         backups.sort()
         for dir in backups:
             print(dir)
-        for dir in backups[:max_versions + 1]:
+        for dir in backups[:len(backups) - max_versions + 1]:
             print("Delete: " + dir)
             abs_path = backup_dir + "/" + dir
             if os.path.isfile(abs_path):
