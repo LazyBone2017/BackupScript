@@ -2,9 +2,9 @@
 
 import os
 import shutil
-import sys
 import datetime
 import tarfile
+import argparse
 
 def copy(src, dst):
     for item in os.listdir(src):
@@ -45,14 +45,17 @@ def create_backup(src, dst, type):
         copy(src, dst + "/" + date)
 
 if __name__ == "__main__":
-    src = sys.argv[1]
-    dst = sys.argv[2]
-    max_versions = int(sys.argv[3])
-    backup_type = "copy" if len(sys.argv) <= 4 else sys.argv[4]
-    if src[-1:] == "/":
-        src = src[:-1]
-    if dst[-1:] == "/":
-        dst = dst[:-1]
+    parser = argparse.ArgumentParser(description='A simple backup script intended to be called periodically, e.g. using cron')
+    parser.add_argument('source', help='directory to be backed up')
+    parser.add_argument('destination', help='directory where the backups are placed into')
+    parser.add_argument('-b', '--backups', dest='backups', type=int, required=True, metavar='amount', help='how many backups to keep')
+    parser.add_argument('-t', '--type', dest='type', type=str, choices=[ 'copy', 'archive' ], default='copy', help='store the backup as a copy or a tar file')
+    args = parser.parse_args()
 
-    check_versions(dst, max_versions)
-    create_backup(src, dst, backup_type)
+    if args.source[-1:] == '/':
+        args.source = args.source[:-1]
+    if args.destination[-1:] == '/':
+        args.destination = args.destination[:-1]
+
+    check_versions(args.destination, args.backups)
+    create_backup(args.source, args.destination, args.type)
